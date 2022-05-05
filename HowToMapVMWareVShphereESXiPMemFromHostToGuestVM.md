@@ -8,4 +8,4 @@ If you're new to using vPMem or need a refresher, start with the VMWare [Persist
 The procedure you use may be different from the one shown below if you use vSphere or an automated procedure.
 
 1. In a web browser, navigate to the IP Address of the ESXi host and login
-2. On the home page, click the "Create/Register VM"
+2. On the home page, click the 
