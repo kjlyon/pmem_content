@@ -48,8 +48,8 @@ If we create a single vPMem device for the guest, mapping is trivial, but if we 
 The correct approach is to use the UUID (unique identifier) since it won't change unless the vPMem is deleted and re-created.
 
 1. From the GuestVM, run the following to list the available NVDIMMs/PMem devices:
-guestvm $ sudo ndctl list -D
 ```
+guestvm $ sudo ndctl list -D
   {
     "dev":"nmem1",
     "id":"8902-a2ebf260",
