@@ -36,7 +36,7 @@ Click "Next" when you're done defining the configuration of the guest.
 I chose to manually install and configure the guest OS using an ISO, but you may have PXE servers available, or choose an OS from an existing VM to clone.
 
 ## Install ndctl
-The `ndctl` utility is used to create and manage namespaces within Linux. Packages exist for1 most common Linux distributions and should be installed using the package manager for your Linux distro. We'll use `apt` since we are using Ubuntu. Instructions for other Linux distros or how to build the latest ndctl release from the source code can be found in the NDCTL User Guide.
+The `ndctl` utility is used to create and manage namespaces within Linux. Packages exist for1 most common Linux distributions and should be installed using the package manager for your Linux distro. We'll use `apt` since we are using Ubuntu. Instructions for other Linux distros or how to build the latest ndctl release from the source code can be found in the [NDCTL User Guide](https://docs.pmem.io/ndctl-user-guide/installing-ndctl).
 
 `$ sudo apt install ndctl`
 
