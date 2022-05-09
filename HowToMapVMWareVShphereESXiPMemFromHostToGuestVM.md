@@ -9,3 +9,7 @@ The procedure you use may be different from the one shown below if you use vSphe
 
 1. In a web browser, navigate to the IP Address of the ESXi host and login
 2. On the home page, click the "Create/Register VM"
+
+![Click  Create/Register VM ](https://user-images.githubusercontent.com/21182867/166822739-3cc23eaa-5dd1-46f8-918d-1f18b89b9b7e.jpg)
+
+Alternatively, click "Virtual Machines" on the left, then click "Create/Register VM"
