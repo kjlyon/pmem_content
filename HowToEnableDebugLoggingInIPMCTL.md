@@ -1,2 +1,1 @@
- DBG\_LOG\_LEVEL 
-
+While we could use tools such as strace, ltrace, bpftrace, gdb, etc, ipmctl actually has a nifty feature to record a lot of debug information that can be very helpful to understand where ipmctl is failing. The DBG\_LOG\_LEVEL option defines how much data ipmctl will log. The logs pertain to the operation of the ipmctl command-line tool only and do not reflect any logging functionality of the persistent memory or kernel itself. The available log levels are:
