@@ -63,3 +63,124 @@ Run an ipmctl command, eg:
 ```
 
 Check the log file located in `/var/log/ipmctl/debug.log`:
+
+```
+# head -12 /var/log/ipmctl/debug.log
+05/29/2020 21:52:55 	1	Debug	0	>00300020<	NVDIMM-DBG:PbrOs.c::PbrDeserializeCtx:196: PBR MODE from shared memory: 0  
+05/29/2020 21:52:55 	2	Debug	0	>00300020<	NVDIMM-DBG:PbrOs.c::PbrDeserializeCtx:204: pbr_ctx.tmp not found, setting to default value  
+05/29/2020 21:52:55 	3	Debug	0	>00300020<	NVDIMM-DBG:Pbr.c::PbrInit:858: PbrInit PBR MODE: 0  
+05/29/2020 21:52:55 	4	Debug	0	>00300020<	NVDIMM-DBG:Pbr.c::PbrInit:859: PbrInit DONE  
+05/29/2020 21:52:55 	5	Debug	0	>00300020<	NvmDimmDriverDriverEntryPoint=0x8342bf00 
+05/29/2020 21:52:55 	6	Debug	0	>00300020<	NVDIMM-DBG:NvmDimmDriver.c::NvmDimmDriverDriverEntryPoint:866: Exiting DriverEntryPoint, error = 0x0. 
+05/29/2020 21:52:55 	7	Debug	0	>00300020<	NvmDimmCliEntryPoint=0x00007f51833aee90 
+05/29/2020 21:52:55 	8	Debug	0	>00300020<	NVDIMM-DBG:Dimm.c::InitializeDimm:4958: Unable to initialize Intel NVM Dimm with custom GUID. Trying NVDIMM control region GUID 
+05/29/2020 21:52:55 	9	Debug	0	>00300020<	NVDIMM-DBG:Dimm.c::InitializeDimm:5016: No region found using custom GUID. Trying NVDIMM control region GUID 
+05/29/2020 21:52:55 	10	Debug	0	>00300020<	NVDIMM-DBG:Dimm.c::FwCmdIdDimm:1745: Error detected when sending PtIdentifyDimm command (RC = 0x7) 
+05/29/2020 21:52:55 	11	Debug	0	>00300020<	NVDIMM-DBG:Dimm.c::InitializeDimm:5068: FW CMD Error: 7 
+05/29/2020 21:52:55 	12	Debug	0	>00300020<	NVDIMM-WARN:Dimm.c::InitializeDimmInventory:1269: Unable to initialize NVDIMM 0x28 
+```
+
+In ipmctl version 2.x, you can dump the data to the terminal and record it using `tee`, eg:
+
+```
+ipmctl create -v -goal persistentmemorytype=appdirect | tee -a /var/log/ipmctl/debug.log
+```
+
+Now you can review the [ipmctl code](https://github.com/intel/ipmctl) to get an idea for what's going on and where the issue might be.
+
+## Enhancing the Preferences Usability
+
+I filed an enhancement request to improve the user experience. See [https://github.com/intel/ipmctl/issues/105](https://github.com/intel/ipmctl/issues/105) for more information.
+
+## Reproducing ipmctl issues
+
+In ipmctl v2.x, a new playback and record (PBR) feature was added. This is probably only useful to Intel or server OEM/ODM engineering that have access to proprietary information and tools, but it is possible to record the operations issued by ipmctl to the hardware for more in-depth investigations.
+
+The Playback and Record (PBR) is a capability included to enable efficient reproduction and debug of issues a user may encounter. The capability is designed to capture the current state of the platform as it relates to PMem modules, and all interactions with the PMem module firmware. This data can then be stored in a file and sent to the development team for rapid reproduction and debug.
+
+The PBR file contains the following:  
+• ACPI tables: NFIT, PCAT and PMTT  
+• SMBIOS tables  
+• Raw firmware command response data
+
+### Theory of operation: Recording
+
+1. Start a recording session (start -session).
+2. Execute all commands to be included in session.
+3. Save the recording to a file (dump -session).
+4. Stop the recording session (stop -session).
+5. Send PBR files to support personnel for analysis.
+
+### Example:
+
+```
+// Start recording the ipmctl commands
+# ipmctl start -session -mode record 
+ 
+// Execute your ipmctl command(s) here>
+// Example: ipmctl create -goal MemoryMode=50 
+
+// Save the recording to a file called 'myrecording.pbr' 
+# ipmctl dump -destination /tmp/ipmctl_create_goal_appdirect_recording.pbr -session 
+
+// Stop the recording
+# ipmctl stop -session 
+```
+
+Example:
+
+```
+# ipmctl start -session -mode record
+Setting to record mode.
+
+# ipmctl create -goal PersistentMemoryType=AppDirect
+Warning - Executing in recording mode!
+
+The following configuration will be applied:
+ SocketID | DimmID | MemorySize | AppDirect1Size | AppDirect2Size
+==================================================================
+ 0x0000   | 0x0001 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0000   | 0x0011 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0000   | 0x0021 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0000   | 0x0101 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0000   | 0x0111 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0000   | 0x0121 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1001 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1011 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1021 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1101 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1111 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1121 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+Do you want to continue? [y/n] y
+Created following region configuration goal
+ SocketID | DimmID | MemorySize | AppDirect1Size | AppDirect2Size
+==================================================================
+ 0x0000   | 0x0001 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0000   | 0x0011 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0000   | 0x0021 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0000   | 0x0101 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0000   | 0x0111 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0000   | 0x0121 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1001 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1011 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1021 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1101 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1111 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+ 0x0001   | 0x1121 | 0.000 GiB  | 252.000 GiB    | 0.000 GiB
+A reboot is required to process new memory allocation goals.
+
+# ipmctl dump -destination /tmp/ipmctl_create_goal_appdirect_recording.pbr -session
+Warning - Executing in recording mode!
+
+Successfully dumped 285340 bytes to file.
+
+# ipmctl stop -session
+Warning - Executing in recording mode!
+
+Stopping a session will free all recording content.
+Do you want to continue? [y/n] y
+Stopped PBR session.
+
+# ls -l /tmp/ipmctl_create_goal_appdirect_recording.pbr
+-rw-r--r--. 1 root root 285340 Jun  1 08:50 /tmp/ipmctl_create_goal_appdirect_recording.pbr
+```
