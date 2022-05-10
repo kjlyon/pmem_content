@@ -89,11 +89,9 @@ ipmctl create -v -goal persistentmemorytype=appdirect | tee -a /var/log/ipmctl/d
 Now you can review the [ipmctl code](https://github.com/intel/ipmctl) to get an idea for what's going on and where the issue might be.
 
 ## Enhancing the Preferences Usability
-
 I filed an enhancement request to improve the user experience. See [https://github.com/intel/ipmctl/issues/105](https://github.com/intel/ipmctl/issues/105) for more information.
 
 ## Reproducing ipmctl issues
-
 In ipmctl v2.x, a new playback and record (PBR) feature was added. This is probably only useful to Intel or server OEM/ODM engineering that have access to proprietary information and tools, but it is possible to record the operations issued by ipmctl to the hardware for more in-depth investigations.
 
 The Playback and Record (PBR) is a capability included to enable efficient reproduction and debug of issues a user may encounter. The capability is designed to capture the current state of the platform as it relates to PMem modules, and all interactions with the PMem module firmware. This data can then be stored in a file and sent to the development team for rapid reproduction and debug.
@@ -104,7 +102,6 @@ The PBR file contains the following:
 • Raw firmware command response data
 
 ### Theory of operation: Recording
-
 1. Start a recording session (start -session).
 2. Execute all commands to be included in session.
 3. Save the recording to a file (dump -session).
@@ -112,7 +109,6 @@ The PBR file contains the following:
 5. Send PBR files to support personnel for analysis.
 
 ### Example:
-
 ```
 // Start recording the ipmctl commands
 # ipmctl start -session -mode record 
