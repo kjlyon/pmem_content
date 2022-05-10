@@ -20,3 +20,46 @@ While we could use tools such as strace, ltrace, bpftrace, gdb, etc, ipmctl actu
 The default log file location on Linux is `/var/log/ipmctl/debug.log` and is defined by DBG\_LOG\_FILE\_NAME.
 
 ## Enabling ipmctl debugging
+
+To enable the feature, first check to see what log level is currently in-use. The following shows the default log level is 0 (zero):
+
+```
+# ipmctl show -preferences
+
+CLI_DEFAULT_DIMM_ID=HANDLE
+CLI_DEFAULT_SIZE=GiB
+APPDIRECT_SETTINGS=RECOMMENDED
+APPDIRECT_GRANULARITY=RECOMMENDED
+DBG_LOG_LEVEL=0
+```
+
+Set the log level using:
+
+```
+# ipmctl set -preferences DBG_LOG_LEVEL=4
+
+Set DBG_LOG_LEVEL=4: Success
+```
+
+Run an ipmctl command, eg:
+
+```
+# ipmctl show -dimm
+
+ DimmID | Capacity  | HealthState | ActionRequired | LockState | FWVersion
+==============================================================================
+ 0x0011 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x0021 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x0001 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x0111 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x0121 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x0101 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x1011 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x1021 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x1001 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x1111 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x1121 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+ 0x1101 | 252.5 GiB | Healthy     | 0              | Disabled  | 01.02.00.5417
+```
+
+Check the log file located in `/var/log/ipmctl/debug.log`:
